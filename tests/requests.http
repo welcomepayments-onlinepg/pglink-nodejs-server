@@ -1,0 +1,8 @@
+POST http://localhost:3000/approve
+Content-Type: application/json
+
+{
+    "key": "gleu329dkched",
+    "amount": 1000,
+    "orderId": "orderID-1234"
+}
