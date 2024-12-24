@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 async function checkAmount(orderId, payAmount) {
   // DB에서 원래 주문 금액을 조회하는 로직을 여기에 추가하세요
-  const originalAmount = 1004; // getAmountFromDB(orderId);
+  const originalAmount = "1004"; // getAmountFromDB(orderId);
   return payAmount === originalAmount; // 예시 금액
 }
 
