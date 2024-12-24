@@ -17,13 +17,24 @@ async function checkAmount(orderId, payAmount) {
   return payAmount === originalAmount; // 예시 금액
 }
 
-async function postApprovePayments(key, amount) {
+async function postApprovePayments(key, amount, orderId) {
   return true;
 }
 
 // 승인 처리 API 엔드포인트
 app.post('/approve', async (req, res) => {
+  // Content-Type 검증
+  if (req.headers['content-type'] !== 'application/json') {
+    res.status(400).json({ result: "INVALID_CONTENT_TYPE", message: "Content-Type must be application/json" });
+    return;
+  }
+
   const { key, amount, orderId } = req.body;
+  if (!key || !amount || !orderId) {
+    res.status(400).json({ result: "INVALID_REQUEST", message: "Missing required fields: key, amount, orderId" });
+    return;
+  }
+
   try {
     if (await checkAmount(orderId, amount) === false) {
       res.json({ result: "UNMATCHED_AMOUNT", message: "결제 금액 불일치" });
@@ -39,11 +50,11 @@ app.post('/approve', async (req, res) => {
     }
 
     // DB 등 결제 승인 성공 로직을 여기에 추가하세요
-    await postApprovePayments(key, amount);
+    await postApprovePayments(key, amount, orderId);
 
   } catch (error) {
     console.error('결제 승인 중 오류 발생 망취소 처리:', error);
-    await netcancelPayment(key, amount);
+    await netcancelPayment(key, amount, orderId);
 
     res.json({ result: "ERROR", message: "결제 승인 중 오류 발생" });
   }
