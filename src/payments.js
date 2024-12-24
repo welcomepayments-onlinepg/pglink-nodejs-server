@@ -27,7 +27,7 @@ async function notifyPaymentAlram(key, amount, orderId, msg) {
     console.log('결제 알림:', msg, key, amount, orderId);
 }
 
-async function netcancelPayment(key, amount) {
+async function netcancelPayment(key, amount, orderId) {
     try {
         const res = await fetch(NETCANCEL_API_URL, {
             method: 'POST',
