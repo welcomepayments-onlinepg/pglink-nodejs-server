@@ -1,11 +1,15 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors'); // cors 패키지 추가
 const { approvePayment, netcancelPayment } = require('./payments');
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// CORS 설정 추가
+app.use(cors());
 
 // body-parser 설정
 app.use(express.json());
