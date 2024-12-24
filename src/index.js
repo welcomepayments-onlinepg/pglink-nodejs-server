@@ -48,7 +48,7 @@ app.post('/approve', async (req, res) => {
     const response = await approvePayment(key, amount, orderId);
     
     if (response.resultCode === '0000') {
-      res.json({ result: "SUCCESS", message: "결제 승인 성공" });
+      res.json({ result: "SUCCESS", message: "결제 승인 성공", response: response });
     } else {
       res.json({ result: "FAIL", message: "결제 승인 실패", response: response });
     }
