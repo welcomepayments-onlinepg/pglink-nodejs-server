@@ -1,4 +1,5 @@
 const APPROVAL_API_URL = 'https://tpglink.paywelcome.co.kr/pglink/approve';
+const CANCEL_API_URL = 'https://tpglink.paywelcome.co.kr/pglink/cancel';
 const NETCANCEL_API_URL = 'https://tpglink.paywelcome.co.kr/pglink/cancel/netcancel';
 
 const MID = 'welcometst';
@@ -27,6 +28,29 @@ async function notifyPaymentAlram(key, amount, orderId, msg) {
     console.log('결제 알림:', msg, key, amount, orderId);
 }
 
+async function cancelPayment(mid, paymethod, tid, orderId, currency, cancelAmount, remainAmount, cancelType, amountTaxFree, amountVat) {
+    const res = await fetch(CANCEL_API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Welcomepayments ${API_KEY}`
+        },
+        body: JSON.stringify({
+            mid: mid,
+            paymethod: paymethod,
+            tid: tid,
+            orderId: orderId,
+            currency: currency,
+            cancelAmount: cancelAmount,
+            remainAmount: remainAmount,
+            cancelType: cancelType,
+            amountTaxFree: amountTaxFree,
+            amountVat: amountVat
+        })
+    });
+
+    return await res.json();
+}
 async function netcancelPayment(key, amount, orderId) {
     try {
         const res = await fetch(NETCANCEL_API_URL, {
@@ -58,4 +82,4 @@ async function netcancelPayment(key, amount, orderId) {
     }
 }
 
-module.exports = { approvePayment, netcancelPayment };
+module.exports = { approvePayment, cancelPayment, netcancelPayment };
