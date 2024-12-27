@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors'); // cors 패키지 추가
-const { approvePayment, netcancelPayment } = require('./payments');
+const { approvePayment, cancelPayment, netcancelPayment } = require('./payments');
 
 dotenv.config();
 
@@ -46,7 +46,7 @@ app.post('/approve', async (req, res) => {
     }
 
     const response = await approvePayment(key, amount, orderId);
-    
+
     if (response.resultCode === '0000') {
       res.json({ result: "SUCCESS", message: "결제 승인 성공", response: response });
     } else {
@@ -64,6 +64,25 @@ app.post('/approve', async (req, res) => {
   }
 });
 
+app.post('/cancel', async (req, res) => {
+  const { mid, paymethod, tid, orderId, currency, cancelAmount, remainAmount, cancelType, amountTaxFree, amountVat } = req.body;
+
+  if (!mid || !paymethod || !tid || !orderId || !currency || !cancelAmount || !remainAmount || !cancelType || !amountTaxFree || !amountVat) {
+    res.status(400).json({ resultCode: "INVALID_REQUEST", resultMessage: "Missing required fields" });
+    return;
+  }
+
+  try {
+    const result = await cancelPayment(mid, paymethod, tid, orderId, currency, cancelAmount, remainAmount, cancelType, amountTaxFree, amountVat);
+    if (result.resultCode === '0000') {
+      res.json({ resultCode: "0000", ...result });
+    } else {
+      res.json({ resultCode: "CANCEL_FAIL", ...result });
+    }
+  } catch (error) {
+    res.json({ resultCode: "CANCEL_ERROR", resultMessage: error.message });
+  }
+})
 // app.post('/netcancel', async (req, res) => {
 //   const { key, amount } = req.body;
 //   try {
