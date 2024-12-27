@@ -67,7 +67,10 @@ app.post('/approve', async (req, res) => {
 app.post('/cancel', async (req, res) => {
   const { mid, paymethod, tid, orderId, currency, cancelAmount, remainAmount, cancelType, amountTaxFree, amountVat } = req.body;
 
-  if (!mid || !paymethod || !tid || !orderId || !currency || !cancelAmount || !remainAmount || !cancelType || !amountTaxFree || !amountVat) {
+  if (!mid || !paymethod || !tid || !orderId || !currency || !cancelAmount
+    || !remainAmount || !cancelType
+    // || !amountTaxFree || !amountVat
+  ) {
     res.status(400).json({ resultCode: "INVALID_REQUEST", resultMessage: "Missing required fields" });
     return;
   }
