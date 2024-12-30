@@ -78,7 +78,7 @@ app.post('/cancel', async (req, res) => {
   try {
     const result = await cancelPayment(mid, paymethod, tid, orderId, currency, cancelAmount, remainAmount, cancelType, amountTaxFree, amountVat);
     if (result.resultCode === '0000') {
-      res.json({ resultCode: "0000", ...result });
+      res.json({ result: "SUCCESS", message: "취소 성공", response: response });
     } else {
       res.json({ resultCode: "CANCEL_FAIL", ...result });
     }
