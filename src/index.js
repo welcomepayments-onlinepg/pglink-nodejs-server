@@ -60,7 +60,7 @@ app.post('/approve', async (req, res) => {
     console.error('결제 승인 중 오류 발생 망취소 처리:', error);
     await netcancelPayment(key, amount, orderId);
 
-    res.json({ result: "ERROR", message: "결제 승인 중 오류 발생" });
+    res.json({ result: "ERROR", message: "결제 승인 중 오류 발생", detail: error.message });
   }
 });
 
@@ -71,19 +71,19 @@ app.post('/cancel', async (req, res) => {
     || !remainAmount || !cancelType
     // || !amountTaxFree || !amountVat
   ) {
-    res.status(400).json({ resultCode: "INVALID_REQUEST", resultMessage: "Missing required fields" });
+    res.status(400).json({ result: "INVALID_REQUEST", message: "Missing required fields" });
     return;
   }
 
   try {
-    const result = await cancelPayment(mid, paymethod, tid, orderId, currency, cancelAmount, remainAmount, cancelType, amountTaxFree, amountVat);
-    if (result.resultCode === '0000') {
+    const response = await cancelPayment(mid, paymethod, tid, orderId, currency, cancelAmount, remainAmount, cancelType, amountTaxFree, amountVat);
+    if (response.resultCode === '0000') {
       res.json({ result: "SUCCESS", message: "취소 성공", response: response });
     } else {
-      res.json({ resultCode: "CANCEL_FAIL", ...result });
+      res.json({ result: "CANCEL_FAIL", ...result });
     }
   } catch (error) {
-    res.json({ resultCode: "CANCEL_ERROR", resultMessage: error.message });
+    res.json({ result: "CANCEL_ERROR", message: error.message });
   }
 })
 // app.post('/netcancel', async (req, res) => {
